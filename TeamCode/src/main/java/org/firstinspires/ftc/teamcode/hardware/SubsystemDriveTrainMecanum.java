@@ -224,10 +224,12 @@ public class SubsystemDriveTrainMecanum {
         // accelerationPeriod is going to be like 1/10 of trajectory length
         if(currentTicks < accelerationPeriod) {
             return (maxVelocity / accelerationPeriod) * currentTicks;
-        } else if(currentTicks >= accelerationPeriod && currentTicks <= 1-accelerationPeriod) {
+        } else if(currentTicks >= accelerationPeriod && currentTicks <= trajectoryLength-accelerationPeriod) {
             return maxVelocity;
-        } else {
+        } else if(currentTicks > trajectoryLength-accelerationPeriod){
             return ((-maxVelocity/accelerationPeriod)*(currentTicks-trajectoryLength));
         }
+
+        return 0;
     }
 }
