@@ -24,6 +24,12 @@ public class SubsystemDriveTrainMecanum {
     public DcMotor[] driveMotors = new DcMotor[4];
 
     public SubsystemDriveTrainMecanum(HardwareMap hwMap, OpMode opMode) {
+        /***
+         * SubsystemDriveTrainMecanum is the class constructor
+         * @param hwMap the hardwareMap object expected from classes which instantiate this class
+         * @param opMode the opMode object expected from classes which instantiate this class
+         */
+
         hwMap = this.hwMap;
         opMode = this.opMode;
 
@@ -32,6 +38,13 @@ public class SubsystemDriveTrainMecanum {
     }
 
     public void initHardware(String leftFront, String leftBack, String rightFront, String rightBack) {
+        /***
+         * initHardware initializes all drivetrain hardware from the hardwareMap
+         * @param leftFront hardwareMap motor reference name
+         * @param leftBack hardwareMap motor reference name
+         * @param rightFront hardwareMap motor reference name
+         * @param rightBack hardwareMap motor reference name
+         */
 
         driveMotors[0] = hwMap.get(DcMotor.class, leftFront);
         driveMotors[1] = hwMap.get(DcMotor.class, leftBack);
@@ -52,6 +65,12 @@ public class SubsystemDriveTrainMecanum {
     }
 
     public void arcadeDrive(float xDriveVector, float yDriveVector, float turnVector) {
+        /***
+         * arcadeDrive handles the arcade drive capabilities for TeleOp driving
+         * @param xDriveVector vector representing x component of driving forwards/backwards/strafing
+         * @param yDriveVector vector representing y component of driving forwards/backwards/strafing
+         * @param turnVector vector representing x component of turning
+         */
 
         double speed = Math.hypot(xDriveVector, yDriveVector);
         double angle = Math.atan2(yDriveVector, xDriveVector) - Math.PI/4;
@@ -67,6 +86,13 @@ public class SubsystemDriveTrainMecanum {
     }
 
     public void translateY(double targetPosition, double maxVelocity, double accelerationPeriod) {
+        /***
+         * translateY handles driving forwards and backwards for autonomous driving
+         * @param targetPosition target encoder ticks
+         * @param maxVelocity maximum motor power the drivetrain should reach
+         * @param accelerationPeriod the period of acceleration and deceleration for driving
+         */
+
         targetPosition = targetPosition * kDistance;
 
         for(DcMotor dcMotor : driveMotors) {
@@ -116,6 +142,13 @@ public class SubsystemDriveTrainMecanum {
     }
 
     public void translateX(double targetPosition, double maxVelocity, double accelerationPeriod) {
+        /***
+         * translateX handles strafing for autonomous driving
+         * @param targetPosition target encoder ticks
+         * @param maxVelocity maximum motor power the drivetrain should reach
+         * @param accelerationPeriod the period of acceleration and deceleration for strafing
+         */
+
         targetPosition = targetPosition * kDistance;
 
         for(DcMotor dcMotor : driveMotors) {
@@ -166,6 +199,13 @@ public class SubsystemDriveTrainMecanum {
     }
 
     public void rotate(double targetAngle, double maxVelocity, double accelerationPeriod) {
+        /***
+         * rotate handles turning for autonomous driving based off of IMU feedback
+         * @param targetAngle target angular offset
+         * @param maxVelocity maximum motor power the drivetrain should reach
+         * @param accelerationPeriod the period of acceleration and deceleration for turning
+         */
+
         targetAngle = targetAngle * kOffset;
 
         for(DcMotor dcMotor : driveMotors) {
@@ -202,6 +242,13 @@ public class SubsystemDriveTrainMecanum {
     }
 
     public void setDrivePowers(double lfPower, double rfPower, double lbPower, double rbPower) {
+        /***
+         * setDrivePowers handles setting motor powers for drivetrain motors
+         * @param lfPower motor power [-1, 1] to be applied to the left front motor
+         * @param rfPower motor power [-1, 1] to be applied to the right front motor
+         * @param lbPower motor power [-1, 1] to be applied to the left back motor
+         * @param rbPower motor power [-1, 1] to be applied to the right back motor
+         */
 
         driveMotors[0].setPower(lfPower);
         driveMotors[1].setPower(lbPower);
@@ -210,19 +257,40 @@ public class SubsystemDriveTrainMecanum {
     }
 
     public double inchesToTicks(double inches) {
+        /***
+         * inchesToTicks handles converting inches to encoder ticks
+         * @param inches the amount of inches to be converted to encoder ticks
+         * @return conversion of inches to motor ticks
+         */
+
         return ((inches * TICKS_PER_REVOLUTION) /
                 (2 * Math.PI * (WHEEL_DIAMETER_IN/2)));
 
     }
 
     public double ticksToInches(double ticks) {
+        /***
+         * ticksToInches handles converting encoder ticks to inches
+         * @param ticks the amount of ticks to be converted to inches
+         * @return conversion of ticks to inches
+         */
+
         return ((ticks * 2 * Math.PI * (WHEEL_DIAMETER_IN/2)) /
                 (TICKS_PER_REVOLUTION));
 
     }
 
     public double trapezoidMotionProfile(double currentTicks, double trajectoryLength, double maxVelocity, double initialVelocity, double accelerationPeriod) {
-        // accelerationPeriod is going to be like 1/10 of trajectory length
+        /***
+         * trapezoidMotionProfile handles creating a trapezoidal motion profile for driving, turning, and strafing
+         * @param currentTicks current encoder ticks or angle of the drivetrain
+         * @param trajectoryLength target encoder ticks or angular offset
+         * @param maxVelocity maximum motor power the drivetrain should reach
+         * @param initialVelocity initial motor power the drivetrain should drive at
+         * @param accelerationPeriod the period of acceleration and deceleration for driving, turning, and strafing
+         * @return motor power for given position or angle
+         */
+
         if(currentTicks < accelerationPeriod) {
             return (maxVelocity-initialVelocity / accelerationPeriod) * (currentTicks+initialVelocity);
         } else if(currentTicks >= accelerationPeriod && currentTicks <= trajectoryLength-accelerationPeriod) {
