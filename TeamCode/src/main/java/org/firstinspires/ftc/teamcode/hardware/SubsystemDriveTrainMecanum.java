@@ -65,12 +65,11 @@ public class SubsystemDriveTrainMecanum {
 
     }
 
-    public void translateX(double targetPosition) {
+    public void translateY(double targetPosition, double maxVelocity, double accelerationPeriod) {
         targetPosition = targetPosition * kDistance;
 
         for(DcMotor dcMotor : driveMotors) {
             dcMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            dcMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
         if(targetPosition > 0) {     // forwards
@@ -79,43 +78,12 @@ public class SubsystemDriveTrainMecanum {
                     driveMotors[2].getCurrentPosition() < inchesToTicks(targetPosition) ||
                     driveMotors[3].getCurrentPosition() < inchesToTicks(targetPosition))) {
 
-                double power = (inchesToTicks(targetPosition) - driveMotors[0].getCurrentPosition()) * kSpeed;
-                setDrivePowers(power, power, power, power);
-
-                opMode.telemetry.addData("MECANUM DRIVETRAIN: RUNNING TO POSITION %",
-                        (1 - (((inchesToTicks(targetPosition) - driveMotors[0].getCurrentPosition()) / inchesToTicks(targetPosition)) * 100)));
-                opMode.telemetry.update();
-            }
-        } else if(targetPosition < 0) {     // backwards
-            while (!opMode.opModeIsActive() && !opMode.isStopRequested() && (driveMotors[0].getCurrentPosition() > inchesToTicks(targetPosition) ||
-                    driveMotors[1].getCurrentPosition() > inchesToTicks(targetPosition) ||
-                    driveMotors[2].getCurrentPosition() > inchesToTicks(targetPosition) ||
-                    driveMotors[3].getCurrentPosition() > inchesToTicks(targetPosition))) {
-
-                double power = (inchesToTicks(targetPosition) - driveMotors[0].getCurrentPosition()) * kSpeed;
-                setDrivePowers(power, power, power, power);
-
-                opMode.telemetry.addData("MECANUM DRIVETRAIN: RUNNING TO POSITION %",
-                        (1 - (((inchesToTicks(targetPosition) - driveMotors[0].getCurrentPosition()) / inchesToTicks(targetPosition)) * 100)));
-                opMode.telemetry.update();
-            }
-        }
-
-    }
-
-    public void translateX(double targetPosition, double power) {
-        targetPosition = targetPosition * kDistance;
-
-        for(DcMotor dcMotor : driveMotors) {
-            dcMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            dcMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-
-        if(targetPosition > 0) {    // forwards
-            while (!opMode.opModeIsActive() && !opMode.isStopRequested() && (driveMotors[0].getCurrentPosition() < inchesToTicks(targetPosition) ||
-                    driveMotors[1].getCurrentPosition() < inchesToTicks(targetPosition) ||
-                    driveMotors[2].getCurrentPosition() < inchesToTicks(targetPosition) ||
-                    driveMotors[3].getCurrentPosition() < inchesToTicks(targetPosition))) {
+                double power = trapezoidMotionProfile(
+                        driveMotors[0].getCurrentPosition(),
+                        targetPosition,
+                        maxVelocity,
+                        (accelerationPeriod * targetPosition)
+                );
 
                 setDrivePowers(power, power, power, power);
 
@@ -129,16 +97,24 @@ public class SubsystemDriveTrainMecanum {
                     driveMotors[2].getCurrentPosition() > inchesToTicks(targetPosition) ||
                     driveMotors[3].getCurrentPosition() > inchesToTicks(targetPosition))) {
 
-                setDrivePowers(power, power, power, power);
+                double power = trapezoidMotionProfile(
+                        driveMotors[0].getCurrentPosition(),
+                        targetPosition,
+                        maxVelocity,
+                        (accelerationPeriod * targetPosition)
+                );
+
+                setDrivePowers(-power, -power, -power, -power);
 
                 opMode.telemetry.addData("MECANUM DRIVETRAIN: RUNNING TO POSITION %",
                         (1 - (((inchesToTicks(targetPosition) - driveMotors[0].getCurrentPosition()) / inchesToTicks(targetPosition)) * 100)));
                 opMode.telemetry.update();
             }
         }
+
     }
 
-    public void translateY(double targetPosition) {
+    public void translateX(double targetPosition, double maxVelocity, double accelerationPeriod) {
         targetPosition = targetPosition * kDistance;
 
         for(DcMotor dcMotor : driveMotors) {
@@ -152,43 +128,12 @@ public class SubsystemDriveTrainMecanum {
                     driveMotors[2].getCurrentPosition() > inchesToTicks(targetPosition) ||
                     driveMotors[3].getCurrentPosition() < inchesToTicks(targetPosition))) {
 
-                double power = (inchesToTicks(targetPosition) - driveMotors[0].getCurrentPosition()) * kSpeed;
-                setDrivePowers(power, -power, -power, power);
-
-                opMode.telemetry.addData("MECANUM DRIVETRAIN: RUNNING TO POSITION %",
-                        (1 - (((inchesToTicks(targetPosition) - driveMotors[0].getCurrentPosition()) / inchesToTicks(targetPosition)) * 100)));
-                opMode.telemetry.update();
-            }
-        } else if(targetPosition < 0) {     // left
-            while (!opMode.opModeIsActive() && !opMode.isStopRequested() && (driveMotors[0].getCurrentPosition() > inchesToTicks(targetPosition) ||
-                    driveMotors[1].getCurrentPosition() < inchesToTicks(targetPosition) ||
-                    driveMotors[2].getCurrentPosition() < inchesToTicks(targetPosition) ||
-                    driveMotors[3].getCurrentPosition() > inchesToTicks(targetPosition))) {
-
-                double power = (inchesToTicks(targetPosition) - driveMotors[0].getCurrentPosition()) * kSpeed;
-                setDrivePowers(power, -power, -power, power);
-
-                opMode.telemetry.addData("MECANUM DRIVETRAIN: RUNNING TO POSITION %",
-                        (1 - (((inchesToTicks(targetPosition) - driveMotors[0].getCurrentPosition()) / inchesToTicks(targetPosition)) * 100)));
-                opMode.telemetry.update();
-            }
-        }
-
-    }
-
-    public void translateY(double targetPosition, double power) {
-        targetPosition = targetPosition * kDistance;
-
-        for(DcMotor dcMotor : driveMotors) {
-            dcMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            dcMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-
-        if(targetPosition > 0) {    // right
-            while (!opMode.opModeIsActive() && !opMode.isStopRequested() && (driveMotors[0].getCurrentPosition() < inchesToTicks(targetPosition) ||
-                    driveMotors[1].getCurrentPosition() > inchesToTicks(targetPosition) ||
-                    driveMotors[2].getCurrentPosition() > inchesToTicks(targetPosition) ||
-                    driveMotors[3].getCurrentPosition() < inchesToTicks(targetPosition))) {
+                double power = trapezoidMotionProfile(
+                        driveMotors[0].getCurrentPosition(),
+                        targetPosition,
+                        maxVelocity,
+                        (accelerationPeriod * targetPosition)
+                );
 
                 setDrivePowers(power, -power, -power, power);
 
@@ -201,6 +146,13 @@ public class SubsystemDriveTrainMecanum {
                     driveMotors[1].getCurrentPosition() < inchesToTicks(targetPosition) ||
                     driveMotors[2].getCurrentPosition() < inchesToTicks(targetPosition) ||
                     driveMotors[3].getCurrentPosition() > inchesToTicks(targetPosition))) {
+
+                double power = trapezoidMotionProfile(
+                        driveMotors[0].getCurrentPosition(),
+                        targetPosition,
+                        maxVelocity,
+                        (accelerationPeriod * targetPosition)
+                );
 
                 setDrivePowers(-power, power, power, -power);
 
@@ -212,32 +164,7 @@ public class SubsystemDriveTrainMecanum {
 
     }
 
-    public void rotate(double targetAngle) {
-        targetAngle = targetAngle * kOffset;
-
-        for(DcMotor dcMotor : driveMotors) {
-            dcMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            dcMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-
-        subsystemIMU.resetAngle();
-
-        if (targetAngle > 0) {      // left
-            while (!opMode.opModeIsActive() && !opMode.isStopRequested() && (subsystemIMU.getAngle() < targetAngle)) {
-                double power = (targetAngle - subsystemIMU.getAngle()) * kAngle;
-
-                setDrivePowers(-power, -power, power, power);
-            }
-        } else if (targetAngle < 0) {
-            while (!opMode.opModeIsActive() && !opMode.isStopRequested() && (subsystemIMU.getAngle() < targetAngle)) {
-                double power = (targetAngle - subsystemIMU.getAngle()) * kAngle;
-
-                setDrivePowers(-power, -power, power, power);
-            }
-        }
-    }
-
-    public void rotate(double targetAngle, double power) {
+    public void rotate(double targetAngle, double maxVelocity, double accelerationPeriod) {
         targetAngle = targetAngle * kOffset;
 
         for(DcMotor dcMotor : driveMotors) {
@@ -250,10 +177,23 @@ public class SubsystemDriveTrainMecanum {
         if (targetAngle > 0) {      // left
             while (!opMode.opModeIsActive() && !opMode.isStopRequested() && (subsystemIMU.getAngle() < targetAngle)) {
 
+                double power = trapezoidMotionProfile(
+                        subsystemIMU.getAngle(),
+                        targetAngle,
+                        maxVelocity,
+                        (accelerationPeriod * targetAngle)
+                );
+
                 setDrivePowers(-power, -power, power, power);
             }
         } else if (targetAngle < 0) {
             while (!opMode.opModeIsActive() && !opMode.isStopRequested() && (subsystemIMU.getAngle() < targetAngle)) {
+                double power = trapezoidMotionProfile(
+                        subsystemIMU.getAngle(),
+                        targetAngle,
+                        maxVelocity,
+                        (accelerationPeriod * targetAngle)
+                );
 
                 setDrivePowers(power, power, -power, -power);
             }
@@ -278,5 +218,16 @@ public class SubsystemDriveTrainMecanum {
         return ((ticks * 2 * Math.PI * (WHEEL_DIAMETER_IN/2)) /
                 (TICKS_PER_REVOLUTION));
 
+    }
+
+    public double trapezoidMotionProfile(double currentTicks, double trajectoryLength, double maxVelocity, double accelerationPeriod) {
+        // accelerationPeriod is going to be like 1/10 of trajectory length
+        if(currentTicks < accelerationPeriod) {
+            return (maxVelocity / accelerationPeriod) * currentTicks;
+        } else if(currentTicks >= accelerationPeriod && currentTicks <= 1-accelerationPeriod) {
+            return maxVelocity;
+        } else {
+            return ((-maxVelocity/accelerationPeriod)*(currentTicks-trajectoryLength));
+        }
     }
 }
