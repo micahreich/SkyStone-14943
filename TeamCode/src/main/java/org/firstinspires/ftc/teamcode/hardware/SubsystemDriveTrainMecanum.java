@@ -10,6 +10,7 @@ public class SubsystemDriveTrainMecanum {
 
     public final double TICKS_PER_REVOLUTION = 537.6;
     public final double WHEEL_DIAMETER_IN = 100 / 25.4;
+    public final double INITIAL_DRIVE_VELOCITY = 0.2;
 
     public final double kSpeed = 1.0;
     public final double kDistance = 1.0;
@@ -81,7 +82,7 @@ public class SubsystemDriveTrainMecanum {
                 double power = trapezoidMotionProfile(
                         driveMotors[0].getCurrentPosition(),
                         targetPosition,
-                        maxVelocity,
+                        maxVelocity, INITIAL_DRIVE_VELOCITY,
                         (accelerationPeriod * targetPosition)
                 );
 
@@ -131,7 +132,7 @@ public class SubsystemDriveTrainMecanum {
                 double power = trapezoidMotionProfile(
                         driveMotors[0].getCurrentPosition(),
                         targetPosition,
-                        maxVelocity,
+                        maxVelocity, INITIAL_DRIVE_VELOCITY,
                         (accelerationPeriod * targetPosition)
                 );
 
@@ -180,7 +181,7 @@ public class SubsystemDriveTrainMecanum {
                 double power = trapezoidMotionProfile(
                         subsystemIMU.getAngle(),
                         targetAngle,
-                        maxVelocity,
+                        maxVelocity, INITIAL_DRIVE_VELOCITY,
                         (accelerationPeriod * targetAngle)
                 );
 
@@ -220,10 +221,10 @@ public class SubsystemDriveTrainMecanum {
 
     }
 
-    public double trapezoidMotionProfile(double currentTicks, double trajectoryLength, double maxVelocity, double accelerationPeriod) {
+    public double trapezoidMotionProfile(double currentTicks, double trajectoryLength, double maxVelocity, double initialVelocity, double accelerationPeriod) {
         // accelerationPeriod is going to be like 1/10 of trajectory length
         if(currentTicks < accelerationPeriod) {
-            return (maxVelocity / accelerationPeriod) * currentTicks;
+            return (maxVelocity-initialVelocity / accelerationPeriod) * (currentTicks+initialVelocity);
         } else if(currentTicks >= accelerationPeriod && currentTicks <= trajectoryLength-accelerationPeriod) {
             return maxVelocity;
         } else if(currentTicks > trajectoryLength-accelerationPeriod){
