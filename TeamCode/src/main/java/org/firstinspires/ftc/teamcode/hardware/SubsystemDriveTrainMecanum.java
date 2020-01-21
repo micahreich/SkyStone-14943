@@ -12,11 +12,8 @@ public class SubsystemDriveTrainMecanum {
     public final double WHEEL_DIAMETER_IN = 100 / 25.4;
     public final double INITIAL_DRIVE_VELOCITY = 0.2;
 
-    public final double kSpeed = 1.0;
     public final double kDistance = 1.0;
-
     public final double kAngle = 1.0;
-    public final double kOffset = 1.0;
 
     public HardwareMap hwMap;
     public LinearOpMode opMode;
@@ -127,7 +124,7 @@ public class SubsystemDriveTrainMecanum {
                 double power = trapezoidMotionProfile(
                         driveMotors[0].getCurrentPosition(),
                         targetPosition,
-                        maxVelocity,
+                        maxVelocity, INITIAL_DRIVE_VELOCITY,
                         (accelerationPeriod * targetPosition)
                 );
 
@@ -184,7 +181,7 @@ public class SubsystemDriveTrainMecanum {
                 double power = trapezoidMotionProfile(
                         driveMotors[0].getCurrentPosition(),
                         targetPosition,
-                        maxVelocity,
+                        maxVelocity, INITIAL_DRIVE_VELOCITY,
                         (accelerationPeriod * targetPosition)
                 );
 
@@ -206,7 +203,7 @@ public class SubsystemDriveTrainMecanum {
          * @param accelerationPeriod the period of acceleration and deceleration for turning
          */
 
-        targetAngle = targetAngle * kOffset;
+        targetAngle = targetAngle * kAngle;
 
         for(DcMotor dcMotor : driveMotors) {
             dcMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -232,7 +229,7 @@ public class SubsystemDriveTrainMecanum {
                 double power = trapezoidMotionProfile(
                         subsystemIMU.getAngle(),
                         targetAngle,
-                        maxVelocity,
+                        maxVelocity, INITIAL_DRIVE_VELOCITY,
                         (accelerationPeriod * targetAngle)
                 );
 
