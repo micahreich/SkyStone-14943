@@ -5,14 +5,18 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.hardware.Robot;
 
 public class TeleOpMain extends LinearOpMode {
-    Robot robot = new Robot(hardwareMap, this);
-    GamepadHandler controls = new GamepadHandler(robot, this);
+    Robot robot;
+    GamepadHandler controls;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        robot =  = new Robot(hardwareMap, this);
         robot.initRobot();
+        
+        controls = new GamepadHandler(robot, this);
 
         waitForStart();
+        
         boolean lastState = false;
         int liftHeight = 0;
 
