@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class SubsystemDriveTrainMecanum {
     public SubsystemIMU subsystemIMU;
 
@@ -16,11 +18,12 @@ public class SubsystemDriveTrainMecanum {
     public final double kAngle = 1.0;
 
     public HardwareMap hwMap;
+    public Telemetry telemetry;
     public LinearOpMode opMode;
 
     public DcMotor[] driveMotors = new DcMotor[4];
 
-    public SubsystemDriveTrainMecanum(HardwareMap hwMap, OpMode opMode) {
+    public SubsystemDriveTrainMecanum(HardwareMap hwMap, Telemetry telemetry, OpMode opMode) {
         /***
          * SubsystemDriveTrainMecanum is the class constructor
          * @param hwMap the hardwareMap object expected from classes which instantiate this class
@@ -28,10 +31,11 @@ public class SubsystemDriveTrainMecanum {
          */
 
         hwMap = this.hwMap;
+        telemetry = this.telemetry;
         opMode = this.opMode;
 
-        opMode.telemetry.addLine("MECANUM DRIVETRAIN: INSTANTIATED");
-        opMode.telemetry.update();
+        telemetry.addLine("MECANUM DRIVETRAIN: INSTANTIATED");
+        telemetry.update();
     }
 
     public void initHardware(String leftFront, String leftBack, String rightFront, String rightBack) {
@@ -57,8 +61,8 @@ public class SubsystemDriveTrainMecanum {
             dcMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
-        opMode.telemetry.addLine("MECANUM DRIVETRAIN: INITIALIZED");
-        opMode.telemetry.update();
+        telemetry.addLine("MECANUM DRIVETRAIN: INITIALIZED");
+        telemetry.update();
     }
 
     public void arcadeDrive(float xDriveVector, float yDriveVector, float turnVector) {
@@ -111,9 +115,9 @@ public class SubsystemDriveTrainMecanum {
 
                 setDrivePowers(power, power, power, power);
 
-                opMode.telemetry.addData("MECANUM DRIVETRAIN: RUNNING TO POSITION %",
+                telemetry.addData("MECANUM DRIVETRAIN: RUNNING TO POSITION %",
                         (1 - (((inchesToTicks(targetPosition) - driveMotors[0].getCurrentPosition()) / inchesToTicks(targetPosition)) * 100)));
-                opMode.telemetry.update();
+                telemetry.update();
             }
         } else if(targetPosition < 0) {     // backwards
             while (!opMode.opModeIsActive() && !opMode.isStopRequested() && (driveMotors[0].getCurrentPosition() > inchesToTicks(targetPosition) ||
@@ -130,9 +134,9 @@ public class SubsystemDriveTrainMecanum {
 
                 setDrivePowers(-power, -power, -power, -power);
 
-                opMode.telemetry.addData("MECANUM DRIVETRAIN: RUNNING TO POSITION %",
+                telemetry.addData("MECANUM DRIVETRAIN: RUNNING TO POSITION %",
                         (1 - (((inchesToTicks(targetPosition) - driveMotors[0].getCurrentPosition()) / inchesToTicks(targetPosition)) * 100)));
-                opMode.telemetry.update();
+                telemetry.update();
             }
         }
 
@@ -168,9 +172,9 @@ public class SubsystemDriveTrainMecanum {
 
                 setDrivePowers(power, -power, -power, power);
 
-                opMode.telemetry.addData("MECANUM DRIVETRAIN: RUNNING TO POSITION %",
+                telemetry.addData("MECANUM DRIVETRAIN: RUNNING TO POSITION %",
                         (1 - (((inchesToTicks(targetPosition) - driveMotors[0].getCurrentPosition()) / inchesToTicks(targetPosition)) * 100)));
-                opMode.telemetry.update();
+                telemetry.update();
             }
         } else if(targetPosition < 0) {     // left
             while (!opMode.opModeIsActive() && !opMode.isStopRequested() && (driveMotors[0].getCurrentPosition() > inchesToTicks(targetPosition) ||
@@ -187,9 +191,9 @@ public class SubsystemDriveTrainMecanum {
 
                 setDrivePowers(-power, power, power, -power);
 
-                opMode.telemetry.addData("MECANUM DRIVETRAIN: RUNNING TO POSITION %",
+                telemetry.addData("MECANUM DRIVETRAIN: RUNNING TO POSITION %",
                         (1 - (((inchesToTicks(targetPosition) - driveMotors[0].getCurrentPosition()) / inchesToTicks(targetPosition)) * 100)));
-                opMode.telemetry.update();
+                telemetry.update();
             }
         }
 

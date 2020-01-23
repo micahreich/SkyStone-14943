@@ -4,18 +4,22 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class SubsystemIntake {
     public HardwareMap hwMap;
     public LinearOpMode opMode;
+    public Telemetry telemetry;
 
     public DcMotor[] intakeMotors = new DcMotor[2];
 
-    public SubsystemIntake(HardwareMap hwMap, LinearOpMode opMode) {
+    public SubsystemIntake(HardwareMap hwMap, Telemetry telemetry, LinearOpMode opMode) {
         hwMap = this.hwMap;
+        telemetry = this.telemetry;
         opMode = this.opMode;
 
-        opMode.telemetry.addLine("INTAKE: INSTANTIATED");
-        opMode.telemetry.update();
+        telemetry.addLine("INTAKE: INSTANTIATED");
+        telemetry.update();
     }
 
     public void initHardware(String rightModule, String leftModule) {
@@ -29,8 +33,8 @@ public class SubsystemIntake {
             dcMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
-        opMode.telemetry.addLine("INTAKE: INITIALIZED");
-        opMode.telemetry.update();
+        telemetry.addLine("INTAKE: INITIALIZED");
+        telemetry.update();
     }
 
     public void runIntake(double power) {

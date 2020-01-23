@@ -2,10 +2,10 @@ package org.firstinspires.ftc.teamcode.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.hardware.Robot;
+import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 
 public class TeleOpMain extends LinearOpMode {
-    Robot robot = new Robot(hardwareMap, this);
+    RobotHardware robot = new RobotHardware(hardwareMap, telemetry, this);
 
     @Override
     public void runOpMode() throws InterruptedException {

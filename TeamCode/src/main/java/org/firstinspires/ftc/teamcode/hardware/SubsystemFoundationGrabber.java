@@ -4,8 +4,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class SubsystemFoundationGrabber {
     public HardwareMap hwMap;
+    public Telemetry telemetry;
     public LinearOpMode opMode;
 
     public final double GRABBING = 1.0;
@@ -13,20 +16,21 @@ public class SubsystemFoundationGrabber {
 
     public Servo[] foundationGrabbers = new Servo[2];
 
-    public SubsystemFoundationGrabber(HardwareMap hwMap, LinearOpMode opMode) {
+    public SubsystemFoundationGrabber(HardwareMap hwMap, Telemetry telemetry, LinearOpMode opMode) {
         hwMap = this.hwMap;
+        telemetry = this.telemetry;
         opMode = this.opMode;
 
-        opMode.telemetry.addLine("FOUNDATION GRABBER: INSTANTIATED");
-        opMode.telemetry.update();
+        telemetry.addLine("FOUNDATION GRABBER: INSTANTIATED");
+        telemetry.update();
     }
 
     public void initHardware(String rightGrabber, String leftGrabber) {
         foundationGrabbers[0] = hwMap.get(Servo.class, rightGrabber);
         foundationGrabbers[1] = hwMap.get(Servo.class, leftGrabber);
 
-        opMode.telemetry.addLine("FOUNDATION GRABBER: INITIALIZED");
-        opMode.telemetry.update();
+        telemetry.addLine("FOUNDATION GRABBER: INITIALIZED");
+        telemetry.update();
     }
 
     public void setIdlePosition() {
