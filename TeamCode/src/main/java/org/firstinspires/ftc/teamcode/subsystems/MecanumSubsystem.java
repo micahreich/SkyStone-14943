@@ -12,6 +12,14 @@ public class MecanumSubsystem {
     this.motors = motors;
   }
   
+  public void disable() {
+    for (DcMotor mot : motors) mot.close();
+  }
+  
+  public void stopMotors() {
+    for (DcMotor mot : motors) mot.setPower(0);
+  }
+  
   //
   // THE FOLLOWING METHODS ARE TAKEN FROM FTC LIB:
   // https://github.com/FTCLib/FTCLib/blob/test/ftclib/src/main/java/com/arcrobotics/ftclib/drivebase/MecanumDrive.java
