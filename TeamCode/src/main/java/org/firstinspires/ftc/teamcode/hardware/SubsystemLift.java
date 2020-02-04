@@ -4,18 +4,22 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
 public class SubsystemLift {
     public HardwareMap hwMap;
     public LinearOpMode opMode;
+    public Telemetry telemetry;
 
     public DcMotor[] liftMotors = new DcMotor[2];
 
-    public SubsystemLift(HardwareMap hwMap, LinearOpMode opMode) {
+    public SubsystemLift(HardwareMap hwMap, Telemetry telemetry, LinearOpMode opMode) {
         hwMap = this.hwMap;
         opMode = this.opMode;
+        telemetry = this.telemetry;
 
-        opMode.telemetry.addLine("LIFT: INSTANTIATED");
-        opMode.telemetry.update();
+        telemetry.addLine("LIFT: INSTANTIATED");
+        telemetry.update();
     }
 
     public void initHardware(String rightMotor, String leftMotor) {
@@ -31,8 +35,8 @@ public class SubsystemLift {
             dcMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
-        opMode.telemetry.addLine("LIFT: INITIALIZED");
-        opMode.telemetry.update();
+        telemetry.addLine("LIFT: INITIALIZED");
+        telemetry.update();
     }
 
     public void raiseLift() {
