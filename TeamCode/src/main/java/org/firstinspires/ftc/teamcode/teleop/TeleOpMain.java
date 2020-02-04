@@ -5,11 +5,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.hardware.RobotHardware;
 
 public class TeleOpMain extends LinearOpMode {
-    RobotHardware robot = new RobotHardware(hardwareMap, telemetry, this);
 
     @Override
     public void runOpMode() throws InterruptedException {
+        robot =  = new Robot(hardwareMap, this);
         robot.initRobot();
+        
+        controls = new GamepadHandler(robot, this);
 
         waitForStart();
 
