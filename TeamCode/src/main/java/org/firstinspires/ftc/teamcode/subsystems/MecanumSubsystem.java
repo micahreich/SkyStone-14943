@@ -35,7 +35,7 @@ public class MecanumSubsystem {
      * @param turnSpeed the turn speed of the robot, derived from input
      */
     public void driveRobotCentric(double xSpeed, double ySpeed, double turnSpeed) {
-        driveRobotCentric(xSpeed, ySpeed, turnSpeed);
+        driveFieldCentric(xSpeed, ySpeed, turnSpeed, 0.0);
     }
 
     /**
