@@ -8,7 +8,7 @@ public class MecanumSubsystem {
 
   private DcMotor[] motors;  // in order of: fL, fR, bL, bR
   
-  public MecanumSubsysem(DcMotor... motors) {
+  public MecanumSubsystem(DcMotor... motors) {
     this.motors = motors;
   }
   
@@ -56,7 +56,7 @@ public class MecanumSubsystem {
         double theta = Math.atan2(ySpeed, xSpeed);
 
         double[] wheelSpeeds = new double[4];
-        wheelSpeeds[0 =
+        wheelSpeeds[0] =
                 input.magnitude() * Math.sin(theta + Math.PI / 4) + turnSpeed;
         wheelSpeeds[1] =
                 input.magnitude() * Math.sin(theta - Math.PI / 4) - turnSpeed;

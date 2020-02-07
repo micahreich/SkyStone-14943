@@ -40,7 +40,6 @@ public class PIDController {
 
         if (Math.abs(position - setPoint) > Math.PI) {
             position += Math.copySign(Math.PI * 2, setPoint);
-
         }
 
         if (!updated) {
@@ -63,6 +62,5 @@ public class PIDController {
         double d = derivative * kD;
 
         return p + i + d;
-
     }
 }
